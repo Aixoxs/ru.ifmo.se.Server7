@@ -1,5 +1,3 @@
-CREATE DATABASE lab7 ENCODING 'UTF-8';
-
 CREATE SEQUENCE content_tb_id_seq
     INCREMENT BY 1
     NO MAXVALUE
@@ -11,8 +9,6 @@ CREATE TABLE IF NOT EXISTS users (
                                      login    VARCHAR(255) UNIQUE NOT NULL,
                                      password VARCHAR(255) UNIQUE NOT NULL
 );
-
-insert into users values (1, 'admin', 1234);
 
 CREATE TABLE IF NOT EXISTS music_bands (
                                            id      integer DEFAULT nextval('content_tb_id_seq') NOT NULL,

@@ -27,11 +27,10 @@ public class Server {
         //Запуск логики работы с клиентом
 
         clientSession.run();
-        socket.close();
     }
 
     void disconnect() {
         clientSession.disconnect();
-        socket.disconnect();
+        socket.close();
     }
 }
