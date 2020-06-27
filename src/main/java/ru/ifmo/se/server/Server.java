@@ -14,7 +14,7 @@ public class Server {
     private DatagramSocket socket;
     private ClientSession clientSession;
 
-    Server(int port) throws SocketException {
+    Server(int port) throws SocketException, ClassNotFoundException {
         this.serverData = new ServerData();
         this.socket = new DatagramSocket(new InetSocketAddress(port));
         clientSession = new ClientSession(socket);

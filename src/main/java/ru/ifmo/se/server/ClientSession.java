@@ -1,20 +1,14 @@
 package ru.ifmo.se.server;
 
-import com.google.common.xml.XmlEscapers;
 import ru.ifmo.se.jdbc.PostgreDB;
 import ru.ifmo.se.jdbc.UserDAO;
 import ru.ifmo.se.manager.App;
 import ru.ifmo.se.manager.Collection;
-import ru.ifmo.se.server.message.Message;
 import ru.ifmo.se.server.message.MessageReader;
 import ru.ifmo.se.server.message.MessageSystem;
 import ru.ifmo.se.server.message.MessageWriter;
 
 import java.net.DatagramSocket;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Timer;
-import java.util.concurrent.*;
 
 class ClientSession {
     private DatagramSocket socket;
@@ -22,7 +16,7 @@ class ClientSession {
     private MessageReader messageReader;
     private MessageWriter messageWriter;
 
-    ClientSession(DatagramSocket socket) {
+    ClientSession(DatagramSocket socket) throws ClassNotFoundException {
         this.socket = socket;
         MessageSystem messageSystem = new MessageSystem();
         messageReader = new MessageReader(socket, messageSystem);

@@ -20,7 +20,8 @@ public class PostgreDB {
 
     }
 
-    public void init(){
+    public void init() throws ClassNotFoundException {
+        Class.forName("org.postgresql.Driver");
         System.out.println("Введите данные для подключения к бд");
         host = readProp("host");
         port = readProp("port");
@@ -29,9 +30,11 @@ public class PostgreDB {
         password = readProp("password");
         try {
             connection = DriverManager.getConnection("jdbc:postgresql://" + host + ":" + port + "/" + db, user, password);
+            connection.setAutoCommit(false);
             createTables();
             System.out.println("Данные введены успешно");
         } catch (SQLException e) {
+            e.printStackTrace();
             System.out.println("Неправильно введены данные, повторите попытку:");
             init();
         }
@@ -45,34 +48,41 @@ public class PostgreDB {
 
     void createTables() throws SQLException {
         Statement stmt = connection.createStatement();
-        String sql = "DO\n" +
-                "$do$\n" +
-                "DECLARE\n" +
-                "   _kind \"char\";\n" +
-                "BEGIN\n" +
-                "   SELECT relkind\n" +
-                "   FROM   pg_class\n" +
-                "   WHERE  oid = 'content_tb_id_seq'::regclass  -- sequence name, optionally schema-qualified\n" +
-                "   INTO  _kind;\n" +
-                "\n" +
-                "   IF NOT FOUND THEN       -- name is free\n" +
-                "      CREATE SEQUENCE content_tb_id_seq\n" +
-                "    INCREMENT BY 1\n" +
+        String sql =
+                "CREATE SEQUENCE if not exists content_tb_id_seq" +
+                        "    INCREMENT BY 1\n" +
                 "    NO MAXVALUE\n" +
                 "    NO MINVALUE\n" +
                 "    CACHE 1;\n" +
-                "\n" +
-                "   ELSIF _kind = 'S' THEN  -- sequence exists\n" +
-                "      -- do nothing?\n" +
-                "   ELSE                    -- object name exists for different kind\n" +
-                "      -- do something!\n" +
-                "   END IF;\n" +
-                "END\n" +
-                "$do$;" +
-                "CREATE TABLE IF NOT EXISTS users (\n" +
+//                "DO\n" +
+//                "$do$\n" +
+//                "DECLARE\n" +
+//                "   _kind \"char\";\n" +
+//                "BEGIN\n" +
+//                "   SELECT relkind\n" +
+//                "   FROM   pg_class\n" +
+//                "   WHERE  oid = 'content_tb_id_seq'::regclass  -- sequence name, optionally schema-qualified\n" +
+//                "   INTO  _kind;\n" +
+//                "\n" +
+//                "   IF NOT FOUND THEN       -- name is free\n" +
+//                "      CREATE SEQUENCE content_tb_id_seq\n" +
+//                "    INCREMENT BY 1\n" +
+//                "    NO MAXVALUE\n" +
+//                "    NO MINVALUE\n" +
+//                "    CACHE 1;\n" +
+//                "\n" +
+//                "   ELSIF _kind = 'S' THEN  -- sequence exists\n" +
+//                "      -- do nothing?\n" +
+//                "   ELSE                    -- object name exists for different kind\n" +
+//                "      -- do something!\n" +
+//                "   END IF;\n" +
+//                "END\n" +
+//                "$do$;" +
+                        "CREATE TABLE IF NOT EXISTS users (\n" +
                 "                                     id       SERIAL PRIMARY KEY NOT NULL,\n" +
                 "                                     login    VARCHAR(255) UNIQUE NOT NULL,\n" +
-                "                                     password VARCHAR(255) UNIQUE NOT NULL\n" +
+                "                                     password VARCHAR(255) NOT NULL,\n" +
+                        "salt varchar(255) NOT NULL \n" +
                 ");" +
                 "CREATE TABLE IF NOT EXISTS music_bands (\n" +
                 "                                           id      integer DEFAULT nextval('content_tb_id_seq') NOT NULL,\n" +

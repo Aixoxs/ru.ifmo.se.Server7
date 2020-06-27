@@ -16,13 +16,10 @@ public class ServerLauncher {
 
             server.run();
         } catch (SocketException var2) {
-            var2.printStackTrace();
             System.exit(-1);
         } catch (IndexOutOfBoundsException var3) {
             System.out.println("Неправильно указаны аргументы(java -jar Server.jar filepath port)");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ClassNotFoundException | ExecutionException e) {
             e.printStackTrace();
         }
     }

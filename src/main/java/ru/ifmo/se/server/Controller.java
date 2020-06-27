@@ -67,7 +67,7 @@ public class Controller implements Runnable {
                 objectResponse = userAccess(object);
             } else if (object instanceof ClassCommand) {
                 objectResponse = userAccess(((ClassCommand) object).getUser());
-                if (objectResponse.equals("connect")) {
+                if (objectResponse.equals("connect") || objectResponse.equals("Пользователь с таким логином уже существует")) {
                     command = (ClassCommand) object;
                     if (command.getCommandName() == CommandName.HISTORY) {
                         objectResponse = history();
